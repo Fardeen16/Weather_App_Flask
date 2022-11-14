@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>What's the weather like?</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+</head>
+
+<body>
+    <section class="hero is-primary">
+        <div class="hero-body">
+            <div class="container">
+                <h1 class="title">
+                    What's the weather like?
+                </h1>
+            </div>
+        </div>
+    </section>
+    <section class="section">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    <form method="POST">
+                        <div class="field has-addons">
+                            <div class="control is-expanded">
+                                <input class="input" name="city" type="text" placeholder="City Name">
+                            </div>
+                            <div class="control">
+                                <button class="button is-info">
+                                    Add City
+                                </button>
+                            </div>
+                        </div>
+                        {% with messages=get_flashed_messages(with_categories=true)%}
+                        {%if messages%}
+                            {%for category, message in messages%}
+                                {%set message_class='is_success'%}
+
+                                {%if category=='error'%}
+                                    {%set message_class = 'is-danger'%}
+                                {%endif%}
+
+                                <div class='notification {{message_class}}'>
+                                    {{message}}
+                                </div>
+                            {%endfor%}
+                        {%endif%}
+                        {%endwith%}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="section_body">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-offset-4 is-4">
+                    {% for weather in weather_data %}
+                    <div class="box">
+                        <article class="media">
+                            <div class="media-left">
+                                <figure class="image is-50x50">
+                                    <img src="http://openweathermap.org/img/w/{{ weather.icon }}.png" alt="Image">
+                                </figure>
+                            </div>
+                            <div class="media-content">
+                                <div class="content">
+                                    <p>
+                                        <span class="title">{{ weather.city }}</span>
+                                        <br>
+                                        <span class="subtitle">{{ weather.temperature }}° C</span>
+                                        <br> {{ weather.description }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="media-right">
+                                <a href="{{ url_for('delete_city', name=weather.city) }}">
+                                    <button class="delete"></button>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="future-forecast">
+            <div class="today" id="current-temp">
+                <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="weather icon" class="w-icon">
+                <div class="other">
+                    <div class="day">Monday</div>
+                    <div class="temp">Max - {{future[0].temp_max}}&#176; C</div>
+                    <div class="temp">Min- {{future[0].temp_min}}&#176; C</div>
+                </div>
+            </div>
+    
+            <div class="weather-forecast" id="weather-forecast">
+                {%days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']%}
+                {%for i in range(1, 5)%}
+                <div class="weather-forecast-item">
+                    <div class="day">Tue</div>
+                    <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="weather icon" class="w-icon">
+                    <div class="temp">Max - {{future[i].temp_max}}&#176; C</div>
+                    <div class="temp">Min- {{future[i].temp_min}}&#176; C</div>
+                </div>
+                <div class="weather-forecast-item">
+                    <div class="day">Wed</div>
+                    <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="weather icon" class="w-icon">
+                    <div class="temp">Max - {{future[i].temp_max}}&#176; C</div>
+                    <div class="temp">Min- {{future[i].temp_min}}&#176; C</div>
+                </div>
+                <div class="weather-forecast-item">
+                    <div class="day">Thur</div>
+                    <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="weather icon" class="w-icon">
+                    <div class="temp">Max - {{future[i].temp_max}}&#176; C</div>
+                    <div class="temp">Min- {{future[i].temp_min}}&#176; C</div>
+                </div>
+                <div class="weather-forecast-item">
+                    <div class="day">Fri</div>
+                    <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="weather icon" class="w-icon">
+                    <div class="temp">Max - {{future[i].temp_max}}&#176; C</div>
+                    <div class="temp">Min- {{future[i].temp_min}}&#176; C</div>
+                </div>
+                <div class="weather-forecast-item">
+                    <div class="day">Sat</div>
+                    <img src="http://openweathermap.org/img/wn/10d@2x.png" alt="weather icon" class="w-icon">
+                    <div class="temp">Max - {{future[i].temp_max}}&#176; C</div>
+                    <div class="temp">Min- {{future[i].temp_min}}&#176; C</div>
+                </div>
+    
+            </div>
+        </div>
+    </section>
+    <footer class="footer">
+    </footer>
+</body>
+<style type="text/css">
+    .hero is-primary{
+        background: rgb(0 0 0 / 60%);
+    }
+    body{
+        background:url('https://images.unsplash.com/photo-1621274403997-37aace184f49?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1');
+        background-repeat: no-repeat;
+        background-size:cover;
+        overflow:hidden;
+        /*background-color: lightblue;*/
+    }
+    .section_body{
+        padding:3rem 1.5rem;
+        overflow-y:auto;
+        height:100%  /*425px*/;
+    }
+
+    .future-forecast{
+        background: rgba(0,0,0 ,0.8);
+        padding: 25px;
+        position: fixed;
+        bottom: 0;
+        display: flex;
+        color:white;
+        width: 100%;
+        /*align-items: center;*/
+        justify-content: center;
+        overflow-y: hidden;
+    }
+    
+    .future-forecast .today{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #eee;
+        border-radius: 10px;
+        padding:15px;
+        padding-right: 40px;
+        border-radius: 10px;
+        background: rgba(0,0,0,0.2)
+    }
+    
+    .future-forecast .today .day{
+        padding: 5px 15px;
+        background: #3c3c44;
+        border-radius: 50px;
+        text-align: center;
+    }
+    
+    .future-forecast .today .temp{
+        font-size: 18px;
+        padding-top: 15px;
+    }
+    
+    .future-forecast .weather-forecast{
+        display: flex;
+    }
+    
+    .weather-forecast .weather-forecast-item{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        margin: 0 10px;
+        border: 1px solid #eee;
+        padding: 15px;
+        border-radius: 10px;
+        background: rgba(0,0,0,0.2)
+        width: 250px;
+    }
+    
+    .weather-forecast .weather-forecast-item .day{
+        padding: 5px 15px;
+        background: #3C3C44;
+        border-radius: 50px;
+        text-align: center;
+    }
+    
+    .weather-forecast .weather-forecast-item .temp{
+        font-weight: 100;
+        font-size: 12px;
+    }
+
+    .footer{
+        padding:0.2rem 0.5rem;/*1, 1.5*/
+    }
+    footer {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        height: 10px;   /* Height of the footer */
+        background-color: darkblue;
+    }
+    
+    
+    
+</style>
+
+</html>
